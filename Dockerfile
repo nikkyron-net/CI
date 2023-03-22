@@ -1,20 +1,24 @@
-ARG DOCKER_BUILD_IMAGE=golang:1.16
-ARG DOCKER_BASE_IMAGE=alpine:3.14
+# BUILD STAGE
+FROM node:14-alpine as build-step
 
-# build the binary
-FROM ${DOCKER_BUILD_IMAGE} AS build
+WORKDIR /app
 
-ARG TAG=v1.0
+COPY package.json /app/
 
-WORKDIR /opt/app
-COPY . /opt/app
-RUN make build-linux
+RUN npm i
 
-# Final Image
-FROM ${DOCKER_BASE_IMAGE}
+COPY . /app
 
-COPY --from=build /opt/app/bin/server /opt/app/server
-COPY --from=build /opt/app/bin /usr/local/bin
-WORKDIR /opt/app/
+RUN npm run build
 
-CMD [ "/opt/app/server" ]
+# ========================================
+# NGINX STAGE
+# ========================================
+
+FROM nginx:1.23-alpine 
+
+WORKDIR /usr/share/nginx/html/
+
+COPY --from=build-step /app/build ./
+
+CMD [ "nginx", "-g", "daemon off;" ]
