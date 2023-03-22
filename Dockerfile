@@ -1,24 +1,17 @@
-# BUILD STAGE
-FROM node:14-alpine as build-step
+# syntax=docker/dockerfile:1
+FROM node:18-alpine as base
 
-WORKDIR /app
+WORKDIR /code
 
-COPY package.json /app/
+COPY package.json package.json
+COPY package-lock.json package-lock.json
 
-RUN npm i
+FROM base as test
+RUN npm ci
+COPY . .
+RUN npm run test
 
-COPY . /app
-
-RUN npm run build
-
-# ========================================
-# NGINX STAGE
-# ========================================
-
-FROM nginx:1.23-alpine 
-
-WORKDIR /usr/share/nginx/html/
-
-COPY --from=build-step /app/build ./
-
-CMD [ "nginx", "-g", "daemon off;" ]
+FROM base as prod
+RUN npm ci --production
+COPY . .
+CMD [ "node", "server.js" ]
