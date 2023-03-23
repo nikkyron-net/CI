@@ -66,5 +66,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo "Docker Hub username: ${{ secret.DOCKERHUB_USERNAME }}"
+        echo "Docker Hub username: ${{ secrets.DOCKERHUB_USERNAME }}"
 
