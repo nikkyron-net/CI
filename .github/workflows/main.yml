@@ -43,3 +43,17 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+
+  custom_GITHUB_ENV:
+    runs-on: ubuntu-latest
+    steps:
+    - name: set value
+      id: step_one
+      run: |
+        echo "step_name=set_value" >> $GITHUB_ENV
+
+    - name: show value
+      id: step_two
+      run: |
+        echo "Step value is ${{ env.step_name }}"
+
