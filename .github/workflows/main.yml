@@ -33,6 +33,8 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
+        env:
+          variable_type: step
         run: |
           echo Hello, world!
           echo "Variable type is $variable_type"
