@@ -57,3 +57,8 @@ jobs:
       run: |
         echo "Step value is ${{ env.step_name }}"
 
+  show-default-variables:
+    runs-on: ubuntu-latest
+    steps:
+      - run: env
+
